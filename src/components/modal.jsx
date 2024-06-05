@@ -55,13 +55,13 @@ const CustomModal = ({ data, setNote }) => {
 
   // const findOne = async () => {
   //   console.log("inside findone");
-  //   const fetchResponse = await fetch(`http://localhost:5001/note/${data._id}`);
+  //   const fetchResponse = await fetch(`https://my-notes-server.vercel.app/note/${data._id}`);
   //   const data = await fetchResponse.json();
   //   return data;
   // };
   const func = async () => {
     const fetchResponse = await fetch(
-      `http://localhost:5001/note/${data._id}`,
+      `https://my-notes-server.vercel.app/note/${data._id}`,
       {
         method: "PATCH",
         headers: {

@@ -60,13 +60,16 @@ const AddNote = ({ setAllNotes, setshowForm }) => {
   const sendDatatoDB = async () => {
     // console.log(recipes);
     console.log(formData);
-    const fetchResponse = await fetch("http://localhost:5001/addnote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    const fetchResponse = await fetch(
+      "https://my-notes-server.vercel.app/addnote",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
     const data = await fetchResponse.json();
     setAllNotes(data);
     // console.log(data);

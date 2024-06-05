@@ -70,7 +70,7 @@ const SingleNote = ({ data, setNote, setAllNotes }) => {
   useEffect(() => {
     const func = async () => {
       const fetchResponse = await fetch(
-        `http://localhost:5001/note/${modifiedData._id}`,
+        `https://my-notes-server.vercel.app/note/${modifiedData._id}`,
         {
           method: "PATCH",
           headers: {
@@ -84,7 +84,7 @@ const SingleNote = ({ data, setNote, setAllNotes }) => {
     func();
   }, [modifiedData]);
   const deleteFunc = async () => {
-    await fetch(`http://localhost:5001/note/${modifiedData._id}`, {
+    await fetch(`https://my-notes-server.vercel.app/note/${modifiedData._id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

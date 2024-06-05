@@ -13,7 +13,7 @@ const MyNotes = () => {
   const [allNotes, setAllNotes] = useState([]);
   // const [filterValue, setfilterValue] = useState(null);
   useEffect(() => {
-    fetch("http://localhost:5001/notes")
+    fetch("https://my-notes-server.vercel.app/notes")
       .then((res) => res.json())
       .then((data) => {
         setAllNotes(data);
@@ -21,7 +21,9 @@ const MyNotes = () => {
   }, []);
   const handleFilterValue = async (e) => {
     console.log(e.target.value);
-    fetch(`http://localhost:5001/filtering?filter=${e.target.value}`)
+    fetch(
+      `https://my-notes-server.vercel.app/filtering?filter=${e.target.value}`
+    )
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
