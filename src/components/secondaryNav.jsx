@@ -1,26 +1,22 @@
 import { Link, NavLink } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const SecondaryNav = () => {
+  const { logOut, user, setUser } = useAuth();
+  // console.log(user);
+  const handleLogOut = () => {
+    logOut()
+      .then((res) => {
+        console.log(res, "logout successful");
+        setUser(null);
+      })
+      .catch((e) => console.log(e));
+  };
   const NavLinks = (
     <>
       <li>
         <NavLink to={"/"}>Home</NavLink>
       </li>
-      {/* <li>
-        <a href="/#features">Features</a>
-      </li>
-      <li>
-        <a href="#specialty">Specialty</a>
-      </li>
-      <li>
-        <a href="#feedback">Feedback</a>
-      </li>
-      <li>
-        <a href="#teammembers">Team Members</a>
-      </li>
-      <li>
-        <a href="#blogs">Blogs</a>
-      </li> */}
 
       <li>
         <NavLink to={"/blogs"}>Blogs</NavLink>
@@ -67,11 +63,45 @@ const SecondaryNav = () => {
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">{NavLinks}</ul>
       </div>
-      <div className="navbar-end">
-        <Link to={"/login"} className="btn">
-          Login
-        </Link>
-      </div>
+      {user ? (
+        <div className="navbar-end">
+          <div className=" dropdown dropdown-bottom dropdown-end">
+            <div
+              tabIndex={0}
+              role="button"
+              className="w-12 rounded-full overflow-hidden "
+            >
+              <img
+                src={
+                  user && user.photoURL
+                    ? user.photoURL
+                    : "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                }
+              />
+            </div>
+
+            <ul
+              tabIndex={0}
+              className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-fit "
+            >
+              <li>
+                <Link to={`/dashboard`}>
+                  <button className="text-nowrap"> View Profile</button>
+                </Link>
+              </li>
+              <li>
+                <button onClick={handleLogOut}> Log Out</button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      ) : (
+        <div className="navbar-end">
+          <Link to={"/login"} className="btn">
+            Login
+          </Link>
+        </div>
+      )}
     </div>
   );
 };

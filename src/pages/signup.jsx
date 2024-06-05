@@ -1,13 +1,13 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-// import { authContext } from "../../context/AuthContext/AuthProvider";
+import { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { AuthContext } from "../provider/AuthProvider";
 
 const Signup = () => {
-  // const { signup, modifyInfo } = useContext(authContext);
+  const { createUserUsingEmailPass, profileUpdate } = useContext(AuthContext);
   // const [state, setState] = useState(true);
-  // const navigate = useNavigate();
-  // const location = useLocation();
-  // let from = location.state?.from?.pathname || "/";
+  const navigate = useNavigate();
+  const location = useLocation();
+  let from = location.state?.from?.pathname || "/";
 
   const [userData, SetUserData] = useState({
     name: "",
@@ -48,43 +48,43 @@ const Signup = () => {
     e.preventDefault();
     console.log(userData);
 
-    // signup(userData.email, userData.password)
-    //   .then((result) => {
-    //     const user = result.user;
-    //     console.log(user);
-    //     updateInfo();
-    //     // console.log(from);
-    //     const currentUser = {
-    //       email: user.email,
-    //     };
-    //     fetch("", {
-    //       method: "POST",
-    //       headers: {
-    //         "content-type": "application/json",
-    //       },
-    //       body: JSON.stringify(currentUser),
-    //     })
-    //       .then((res) => res.json())
-    //       .then((data) => {
-    //         console.log(data);
-    //         localStorage.setItem("json-token", data.token);
-    //       });
-    //     navigate(from, { replace: true });
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    createUserUsingEmailPass(userData.email, userData.password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        updateInfo();
+        // console.log(from);
+        const currentUser = {
+          email: user.email,
+        };
+        // fetch("", {
+        //   method: "POST",
+        //   headers: {
+        //     "content-type": "application/json",
+        //   },
+        //   body: JSON.stringify(currentUser),
+        // })
+        //   .then((res) => res.json())
+        //   .then((data) => {
+        //     console.log(data);
+        //     localStorage.setItem("json-token", data.token);
+        //   });
+        navigate(from, { replace: true });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  // const updateInfo = () => {
-  //   modifyInfo({ displayName: userData.name, photoURL: userData.url })
-  //     .then(alert("profile updated!"))
-  //     .catch((err) => console.log(err));
-  // };
+  const updateInfo = () => {
+    profileUpdate({ displayName: userData.name, photoURL: userData.url })
+      .then(alert("profile updated!"))
+      .catch((err) => console.log(err));
+  };
 
   return (
-    <div className=" h-[69vh] flex flex-col items-center">
-      <div className="w-full max-w-sm p-6 m-auto mx-auto  rounded-lg shadow-md bg-white-800 text-black">
+    <div className=" h-[69vh] flex flex-col items-center static">
+      <div className="w-full max-w-sm p-6 mx-auto  rounded-lg shadow-md bg-white-800 text-black">
         <form onSubmit={handleSubmit}>
           <h2 className="text-xl text-red-400 ">{error.name}</h2>
           <div className="relative flex items-center mt-8">

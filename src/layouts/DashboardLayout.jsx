@@ -1,6 +1,17 @@
 import { Link, Outlet } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const DashboardLayout = () => {
+  const { logOut, setUser } = useAuth();
+  // console.log(user);
+  const handleLogOut = () => {
+    logOut()
+      .then((res) => {
+        console.log(res, "logout successful");
+        setUser(null);
+      })
+      .catch((e) => console.log(e));
+  };
   const sideLinks = (
     <>
       <div>
@@ -43,7 +54,10 @@ const DashboardLayout = () => {
         <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content font-normal text-lg  flex flex-col justify-between">
           {/* Sidebar content here */}
           {sideLinks}
-          <button className="w-full btn font-bold text-white bg-[#d88531]">
+          <button
+            onClick={handleLogOut}
+            className="w-full btn font-bold text-white bg-[#d88531]"
+          >
             LogOut
           </button>
         </ul>

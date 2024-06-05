@@ -1,7 +1,18 @@
 import { Link, Outlet } from "react-router-dom";
 import { BsHeartArrow } from "react-icons/bs";
+import useAuth from "../hooks/useAuth";
 
 const NotePageLayout = () => {
+  const { logOut, setUser } = useAuth();
+  // console.log(user);
+  const handleLogOut = () => {
+    logOut()
+      .then((res) => {
+        console.log(res, "logout successful");
+        setUser(null);
+      })
+      .catch((e) => console.log(e));
+  };
   const sideLinks = (
     <>
       <div>
@@ -75,7 +86,10 @@ const NotePageLayout = () => {
         <ul className="menu p-4 w-60 min-h-full text-base-content font-normal text-md  flex flex-col justify-between bg-white">
           {/* Sidebar content here */}
           {sideLinks}
-          <button className="w-full btn font-bold text-white bg-[#d88531]">
+          <button
+            onClick={handleLogOut}
+            className="w-full btn font-bold text-white bg-[#d88531]"
+          >
             LogOut
           </button>
         </ul>
