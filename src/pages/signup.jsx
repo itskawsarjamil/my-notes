@@ -69,6 +69,24 @@ const Signup = () => {
         //     console.log(data);
         //     localStorage.setItem("json-token", data.token);
         //   });
+        // if (password === confirm_password) {
+        // createUser(email, password).then((data) => {
+        //   if (data?.user?.email) {
+        //     const userInfo = {
+        //       email: data?.user?.email,
+        //       name: name,
+        //     };
+        //     fetch("https://stride-final-project-server.vercel.app/user", {
+        //       method: "POST",
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //       },
+        //       body: JSON.stringify(userInfo),
+        //     })
+        //       .then((res) => res.json())
+        //       .then((data) => console.log(data));
+        //   }
+        // });
         navigate(from, { replace: true });
       })
       .catch((err) => {

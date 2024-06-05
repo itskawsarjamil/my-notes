@@ -12,6 +12,7 @@ import SecondaryLayout from "../layouts/SecondaryLayout";
 import Blogs from "../components/home/Blogs";
 import NotePageLayout from "../layouts/NotePageLayout";
 import PrivateRoutes from "./PrivateRoutes";
+import Cooking from "../pages/Cooking";
 
 export const router = createBrowserRouter([
   {
@@ -59,23 +60,23 @@ export const router = createBrowserRouter([
       },
       {
         path: "fav-notes",
-        element: <MyNotes />,
+        element: <Cooking />,
       },
       {
         path: "pinned-notes",
-        element: <MyNotes />,
+        element: <Cooking />,
       },
       {
         path: "incomplete-notes",
-        element: <MyNotes />,
+        element: <Cooking />,
       },
       {
         path: "completed-notes",
-        element: <MyNotes />,
+        element: <Cooking />,
       },
       {
         path: "trash-notes",
-        element: <MyNotes />,
+        element: <Cooking />,
       },
     ],
   },
@@ -94,7 +95,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "statistics",
-        element: <Statistics />,
+        element: <Cooking />,
       },
     ],
   },

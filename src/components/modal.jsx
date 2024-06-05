@@ -3,25 +3,38 @@
 // import "react-quill/dist/quill.snow.css";
 // import PropTypes from "prop-types";
 import { useState } from "react";
+import { LuPin } from "react-icons/lu";
 import {
   MdOutlinePushPin,
   // MdPushPin,
   MdFavoriteBorder,
   MdCancel,
+  MdFavorite,
   // MdFavorite,
   // MdDone,
 } from "react-icons/md";
 const CustomModal = ({ data, setNote }) => {
   // const [value, setValue] = useState("");
-  const [formData, setFormData] = useState({
-    title: data.title,
-    description: data.description,
-    category: data.category,
-    isCompleted: data.isCompleted,
-    isFav: data.isFav,
-    isPinned: data.isPinned,
-    isDeleted: data.isDeleted,
-  });
+  const [formData, setFormData] = useState(data);
+  const handlePinned = () => {
+    console.log("pin btnclicked");
+
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        isPinned: !prevState.isPinned,
+      };
+    });
+  };
+  const handleFav = () => {
+    console.log("fav btnclicked");
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        isFav: !prevState.isFav,
+      };
+    });
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -29,20 +42,43 @@ const CustomModal = ({ data, setNote }) => {
       [name]: value,
     });
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
+    func();
+    location.reload();
+    // const finaldata2 = allNotes.filter((note) => note._id !== data._id);
+    // const finaldata = [formData, ...finaldata2];
+    // await setAllNotes(finaldata);
+    setNote(null);
+  };
+
+  // const findOne = async () => {
+  //   console.log("inside findone");
+  //   const fetchResponse = await fetch(`http://localhost:5001/note/${data._id}`);
+  //   const data = await fetchResponse.json();
+  //   return data;
+  // };
+  const func = async () => {
+    const fetchResponse = await fetch(
+      `http://localhost:5001/note/${data._id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }
+    );
+    await fetchResponse.json();
   };
   const categories = ["easy", "medium", "hard"];
-  //   console.log(data);
+  // const { title, description, category, isCompleted, isFav, isPinned } = data;
   return (
     <>
       <input type="checkbox" id="my_modal_6" className="modal-toggle" />
       <div className="modal" role="dialog">
         <div className="modal-box relative">
-          {/* <h3 className="font-bold text-lg">{data.title}</h3>
-          <p className="py-4">This modal works with a hidden checkbox!</p>
-          */}
           <div
             className="border p-6 rounded-md"
             style={{
@@ -64,6 +100,9 @@ const CustomModal = ({ data, setNote }) => {
                 <input
                   id="title"
                   type="text"
+                  name="title"
+                  onChange={handleChange}
+                  defaultValue={formData.title}
                   placeholder="Enter Title"
                   className="border p-2 m-2 rounded-md w-3/4"
                 />
@@ -73,6 +112,9 @@ const CustomModal = ({ data, setNote }) => {
                   description
                 </label>
                 <input
+                  name="description"
+                  onChange={handleChange}
+                  defaultValue={formData.description}
                   id="description"
                   type="text"
                   placeholder="Enter description"
@@ -92,7 +134,7 @@ const CustomModal = ({ data, setNote }) => {
                 <select
                   id="category"
                   name="category"
-                  value={formData.category}
+                  defaultValue={formData.category}
                   onChange={handleChange}
                   required
                   className="border w-2/3 p-1 rounded-md me-3"
@@ -117,12 +159,36 @@ const CustomModal = ({ data, setNote }) => {
                     close!
                   </label> */}
                 </button>
-                <button className="border border-black p-1 rounded-md  mt-4 me-2 ">
-                  <MdFavoriteBorder />
-                </button>
-                <button className="border border-black p-1 rounded-md  mt-4 ">
-                  <MdOutlinePushPin />
-                </button>
+                <div
+                  className="border border-black p-1 rounded-md  mt-4 me-2 "
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleFav();
+                  }}
+                >
+                  {formData.isFav === true ? (
+                    <MdFavorite />
+                  ) : (
+                    <MdFavoriteBorder />
+                  )}
+                </div>
+                <div
+                  className={`border border-black p-1 rounded-md  mt-4 ${
+                    formData.isPinned === true
+                      ? "bg-black text-white"
+                      : "bg-white text-black"
+                  }`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePinned();
+                  }}
+                >
+                  {formData.isPinned === true ? (
+                    <LuPin />
+                  ) : (
+                    <MdOutlinePushPin />
+                  )}
+                </div>
               </div>
             </form>
           </div>

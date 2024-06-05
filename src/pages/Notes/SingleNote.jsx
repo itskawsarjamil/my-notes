@@ -1,28 +1,97 @@
 /* eslint-disable react/prop-types */
 import {
   MdOutlinePushPin,
-  MdPushPin,
   MdFavoriteBorder,
   MdFavorite,
   MdDone,
   MdDelete,
 } from "react-icons/md";
+import { LuPin } from "react-icons/lu";
+import { useEffect, useState } from "react";
 
-const SingleNote = ({ data, setNote }) => {
-  const string = `Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit aspernatur!`;
-  const final = string.length > 20 ? string.slice(0, 50) + "..." : string;
-  const handleFavorite = () => {
-    // console.log("favoorite btn clicked of", data.id);
-  };
+const SingleNote = ({ data, setNote, setAllNotes }) => {
+  const [modifiedData, setModifiedData] = useState(data);
+  // const [count, setcount] = useState(0);
+  let string = "";
+  string =
+    data.description.length > 50
+      ? data.description.slice(0, 50) + "..."
+      : data.description;
   const handlePinned = () => {
-    // console.log("pinned btn clicked of", data.id);
+    // setcount((count) => count + 1);
+    console.log("pin btnclicked");
+
+    setModifiedData((prevState) => {
+      return {
+        ...prevState,
+        isPinned: !prevState.isPinned,
+      };
+    });
+  };
+  const handleFav = () => {
+    // setcount((count) => count + 1);
+    console.log("fav btnclicked");
+    setModifiedData((prevState) => {
+      return {
+        ...prevState,
+        isFav: !prevState.isFav,
+      };
+    });
   };
   const handleComplete = () => {
-    // console.log("complete btn clicked of", data.id);
+    // setcount((count) => count + 1);
+    console.log("complete btnclicked");
+    setModifiedData((prevState) => {
+      return {
+        ...prevState,
+        isCompleted: !prevState.isCompleted,
+      };
+    });
   };
-  const handleDeleted = () => {
-    // console.log("complete btn clicked of", data.id);
+  const handleDeleted = (id) => {
+    // setcount((count) => count + 1);
+    console.log("delete btnclicked");
+    // if (window.confirm("are you sure?")) {
+    setModifiedData((prevState) => {
+      // console.log("111");
+      return {
+        ...prevState,
+        isDeleted: true,
+      };
+    });
+    // }
+    setAllNotes((prevState) => {
+      const finaldata = prevState.filter((note) => note._id !== id);
+      return finaldata;
+    });
+    deleteFunc();
   };
+
+  useEffect(() => {
+    const func = async () => {
+      const fetchResponse = await fetch(
+        `http://localhost:5001/note/${modifiedData._id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(modifiedData),
+        }
+      );
+      await fetchResponse.json();
+    };
+    func();
+  }, [modifiedData]);
+  const deleteFunc = async () => {
+    await fetch(`http://localhost:5001/note/${modifiedData._id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  };
+
   return (
     //   <label  className="btn">open modal</label>
 
@@ -41,40 +110,46 @@ const SingleNote = ({ data, setNote }) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            handlePinned();
+            handleFav();
           }}
           className="absolute top-0 right-0 bg-transparent rounded-full p-2"
         >
-          <MdOutlinePushPin />
+          {modifiedData.isFav === true ? <MdFavorite /> : <MdFavoriteBorder />}
         </button>
         <button
           onClick={(e) => {
             e.stopPropagation();
-            handleDeleted();
+            handleDeleted(data._id);
           }}
           className="absolute top-8 right-0 bg-transparent rounded-full p-2"
         >
           <MdDelete />
         </button>
       </div>
-      <p className="text-sm p-3">{final}</p>
+      <p className="text-sm p-3">{string}</p>
       <button
         onClick={(e) => {
           e.stopPropagation();
-          handleFavorite();
+          handlePinned();
         }}
-        className="absolute -left-4 bottom-0 bg-white rounded-full p-1 border border-black"
+        className={`absolute -left-4 bottom-0  rounded-full p-1 border border-black ${
+          modifiedData.isPinned === true
+            ? "bg-black text-white"
+            : "bg-white text-black"
+        }`}
       >
-        <MdFavoriteBorder />
+        {modifiedData.isPinned === true ? <LuPin /> : <MdOutlinePushPin />}
       </button>
       <button
         onClick={(e) => {
           e.stopPropagation();
           handleComplete();
         }}
-        className="border border-black flex justify-center p-2 w-full  m-0 rounded-sm border-b-0 border-x-0 hover:bg-slate-100"
+        className={`border border-black flex justify-center p-2 w-full  m-0 rounded-sm border-b-0 border-x-0 hover:bg-slate-100 ${
+          modifiedData.isCompleted ? "bg-slate-300" : "bg-transparent"
+        }`}
       >
-        <MdDone />
+        {modifiedData.isCompleted === false ? <MdDone /> : "In Progress.."}
       </button>
     </label>
   );

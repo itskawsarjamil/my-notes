@@ -11,15 +11,23 @@ const MyNotes = () => {
   const [showForm, setshowForm] = useState(false);
   const [note, setNote] = useState(null);
   const [allNotes, setAllNotes] = useState([]);
+  // const [filterValue, setfilterValue] = useState(null);
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/todos")
+    fetch("http://localhost:5001/notes")
       .then((res) => res.json())
       .then((data) => {
-        const value = data.slice(0, 10);
-        // console.log(value);
-        setAllNotes(value);
+        setAllNotes(data);
       });
   }, []);
+  const handleFilterValue = async (e) => {
+    console.log(e.target.value);
+    fetch(`http://localhost:5001/filtering?filter=${e.target.value}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setAllNotes(data);
+      });
+  };
   return (
     <div>
       <div className="border  w-3/4 mx-auto my-5 flex justify-between items-center px-4">
@@ -39,10 +47,11 @@ const MyNotes = () => {
           name="filter"
           id="filter"
           className="border"
-          // onChange={}
+          onChange={handleFilterValue}
           required
         >
           <option value="">Select Filter</option>
+          <option value="all">All</option>
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
@@ -57,17 +66,27 @@ const MyNotes = () => {
         </div>
       ) : (
         <div className="mb-10 max-w-xl mx-auto">
-          <AddNote setshowForm={setshowForm} />
+          <AddNote setAllNotes={setAllNotes} setshowForm={setshowForm} />
         </div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {allNotes.map((note) => (
-          <SingleNote key={note.id} data={note} setNote={setNote} />
+          <SingleNote
+            key={note._id}
+            data={note}
+            setNote={setNote}
+            setAllNotes={setAllNotes}
+          />
         ))}
       </div>
       {note && (
         <PrivateRoutes>
-          <CustomModal data={note} setNote={setNote} />
+          <CustomModal
+            data={note}
+            setNote={setNote}
+            // setAllNotes={setAllNotes}
+            // allNotes={allNotes}
+          />
         </PrivateRoutes>
       )}
     </div>

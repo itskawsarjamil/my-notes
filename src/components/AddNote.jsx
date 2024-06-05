@@ -1,17 +1,18 @@
-import ReactQuill from "react-quill";
+/* eslint-disable react/prop-types */
+// import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import {
   MdOutlinePushPin,
-  MdPushPin,
   MdFavoriteBorder,
   MdFavorite,
-  MdDone,
   MdClose,
 } from "react-icons/md";
-const AddNote = ({ setshowForm }) => {
-  const [value, setValue] = useState("");
+import { LuPin } from "react-icons/lu";
+
+const AddNote = ({ setAllNotes, setshowForm }) => {
+  // const [value, setValue] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -20,17 +21,55 @@ const AddNote = ({ setshowForm }) => {
     isFav: false,
     isPinned: false,
     isDeleted: false,
+    createdAt: new Date(),
   });
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // console.log(name, value);
     setFormData({
       ...formData,
       [name]: value,
     });
   };
+  const handlePinned = () => {
+    console.log("pin btnclicked");
+
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        isPinned: !prevState.isPinned,
+      };
+    });
+  };
+  const handleFav = () => {
+    console.log("fav btnclicked");
+    setFormData((prevState) => {
+      return {
+        ...prevState,
+        isFav: !prevState.isFav,
+      };
+    });
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
+    sendDatatoDB();
+
+    setshowForm(false);
+  };
+  const sendDatatoDB = async () => {
+    // console.log(recipes);
+    console.log(formData);
+    const fetchResponse = await fetch("http://localhost:5001/addnote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    const data = await fetchResponse.json();
+    setAllNotes(data);
+    // console.log(data);
   };
   const categories = ["easy", "medium", "hard"];
   return (
@@ -44,6 +83,8 @@ const AddNote = ({ setshowForm }) => {
             Title
           </label>
           <input
+            onChange={handleChange}
+            name="title"
             id="title"
             type="text"
             placeholder="Enter Title"
@@ -55,6 +96,8 @@ const AddNote = ({ setshowForm }) => {
             description
           </label>
           <input
+            onChange={handleChange}
+            name="description"
             id="description"
             type="text"
             placeholder="Enter description"
@@ -94,18 +137,28 @@ const AddNote = ({ setshowForm }) => {
           >
             Post
           </button>
-          <button
-            className="border border-black p-1 rounded-md  mt-4 me-2 "
-            type="submit"
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              handleFav();
+            }}
+            className="border border-black p-1 rounded-md  mt-4 me-2"
           >
-            <MdFavoriteBorder />
-          </button>
-          <button
-            className="border border-black p-1 rounded-md  mt-4 "
-            type="submit"
+            {formData.isFav === true ? <MdFavorite /> : <MdFavoriteBorder />}
+          </div>
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePinned();
+            }}
+            className={`border border-black p-1 rounded-md  mt-4 ${
+              formData.isPinned === true
+                ? "bg-black text-white"
+                : "bg-white text-black"
+            }`}
           >
-            <MdOutlinePushPin />
-          </button>
+            {formData.isPinned === true ? <LuPin /> : <MdOutlinePushPin />}
+          </div>
         </div>
       </form>
     </div>

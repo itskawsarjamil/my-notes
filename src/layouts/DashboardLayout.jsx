@@ -1,5 +1,6 @@
 import { Link, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { MdMenu } from "react-icons/md";
 
 const DashboardLayout = () => {
   const { logOut, setUser } = useAuth();
@@ -35,14 +36,14 @@ const DashboardLayout = () => {
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col items-center justify-center">
+      <div className="drawer-content flex flex-col items-center justify-center mt-4">
         {/* Page content here */}
         <Outlet />
         <label
           htmlFor="my-drawer-2"
-          className="btn btn-primary drawer-button lg:hidden"
+          className="absolute top-5 right-10 btn btn-outline drawer-button lg:hidden"
         >
-          Open drawer
+          <MdMenu />
         </label>
       </div>
       <div className="drawer-side">
